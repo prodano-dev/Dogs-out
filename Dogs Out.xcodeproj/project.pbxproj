@@ -57,7 +57,6 @@
 				EB2FA596274F905C00E2A0C6 /* Services */,
 				EB2FA595274F905500E2A0C6 /* Models */,
 				EB2FA594274F904E00E2A0C6 /* Repositories */,
-				EB2FA586274F8CB300E2A0C6 /* Dogs_OutApp.swift */,
 				EB2FA588274F8CB300E2A0C6 /* ContentView.swift */,
 				EB2FA58A274F8CB500E2A0C6 /* Assets.xcassets */,
 				EB2FA58C274F8CB500E2A0C6 /* Preview Content */,
@@ -97,6 +96,7 @@
 		EB2FA597274F906200E2A0C6 /* System */ = {
 			isa = PBXGroup;
 			children = (
+				EB2FA586274F8CB300E2A0C6 /* Dogs_OutApp.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
