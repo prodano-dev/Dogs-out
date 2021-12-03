@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct Dogs_OutApp: App {
+    let environment = AppEnviroment.bootstrap()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(container: environment.container)
         }
     }
 }

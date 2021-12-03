@@ -8,14 +8,10 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        Text("Hello, world!")
-            .padding()
-    }
-}
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+    let container: DIContainer
+
+    var body: some View {
+        MapView(viewModel: .init(container: container))
     }
 }
