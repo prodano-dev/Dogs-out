@@ -39,10 +39,6 @@ struct Geometry: Codable, Equatable {
 
     let coordinates: [Double]
 
-    enum CodingKeys: String, CodingKey {
-        case coordinates = "coordinates"
-
-    }
 }
 
 struct Records: Codable, Equatable {
