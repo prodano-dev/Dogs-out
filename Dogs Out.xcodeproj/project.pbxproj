@@ -24,7 +24,6 @@
 		EB2FA59E274F995E00E2A0C6 /* HondenLosLoopTerrein.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB2FA59D274F995E00E2A0C6 /* HondenLosLoopTerrein.swift */; };
 		EB6B5697275621A00030D740 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6B5696275621A00030D740 /* MapView.swift */; };
 		EB6B569A275621C40030D740 /* MapViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6B5699275621C40030D740 /* MapViewViewModel.swift */; };
-		EB6B569C275665B60030D740 /* MapKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB6B569B275665B60030D740 /* MapKitView.swift */; };
 		EBF693BD275F4CA800DA7019 /* ParkCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF693BC275F4CA800DA7019 /* ParkCell.swift */; };
 		EBF693C0275F626200DA7019 /* Dogs-Out-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = EBF693BF275F626200DA7019 /* Dogs-Out-Info.plist */; };
 /* End PBXBuildFile section */
@@ -48,7 +47,6 @@
 		EB2FA59D274F995E00E2A0C6 /* HondenLosLoopTerrein.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HondenLosLoopTerrein.swift; sourceTree = "<group>"; };
 		EB6B5696275621A00030D740 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		EB6B5699275621C40030D740 /* MapViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewViewModel.swift; sourceTree = "<group>"; };
-		EB6B569B275665B60030D740 /* MapKitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitView.swift; sourceTree = "<group>"; };
 		EBF693BC275F4CA800DA7019 /* ParkCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkCell.swift; sourceTree = "<group>"; };
 		EBF693BF275F626200DA7019 /* Dogs-Out-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dogs-Out-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -198,7 +196,6 @@
 			children = (
 				EB6B5696275621A00030D740 /* MapView.swift */,
 				EB6B5699275621C40030D740 /* MapViewViewModel.swift */,
-				EB6B569B275665B60030D740 /* MapKitView.swift */,
 			);
 			path = Mapview;
 			sourceTree = "<group>";
@@ -289,7 +286,6 @@
 				EB10209E274FD63F00384B20 /* Cancellable.swift in Sources */,
 				EB2FA59E274F995E00E2A0C6 /* HondenLosLoopTerrein.swift in Sources */,
 				EB102098274FD1E700384B20 /* Route.swift in Sources */,
-				EB6B569C275665B60030D740 /* MapKitView.swift in Sources */,
 				EB1020A0274FD7BD00384B20 /* DogsWebRepository.swift in Sources */,
 				EB6B5697275621A00030D740 /* MapView.swift in Sources */,
 				EBF693BD275F4CA800DA7019 /* ParkCell.swift in Sources */,
@@ -433,13 +429,16 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Dogs-Out-Info.plist";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "\"always use\"";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "\"woef\"";
 				INFOPLIST_KEY_NSLocationUsageDescription = "\"voor de honden\"";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "\"wanneer in gebruik\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -465,13 +464,16 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Dogs-Out-Info.plist";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "\"always use\"";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "\"woef\"";
 				INFOPLIST_KEY_NSLocationUsageDescription = "\"voor de honden\"";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "\"wanneer in gebruik\"";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

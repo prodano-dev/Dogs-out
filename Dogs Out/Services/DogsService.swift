@@ -9,7 +9,8 @@ import Foundation
 import Combine
 
 protocol DogsService {
-    func fetchDogLocation() -> AnyPublisher<Records, APIError>
+    @available(iOS 15.0.0, *)
+    func fetchDogLocation() async throws -> Records
 }
 
 struct DefaultDogsService: DogsService {
@@ -20,7 +21,8 @@ struct DefaultDogsService: DogsService {
         self.dogsWebRepository = dogsWebRepository
     }
 
-    func fetchDogLocation() -> AnyPublisher<Records, APIError> {
-        return dogsWebRepository.fetchDogLocation()
+    @available(iOS 15.0.0, *)
+    func fetchDogLocation() async throws -> Records {
+        return try await dogsWebRepository.fetchDogLocation()
     }
 }

@@ -9,7 +9,8 @@ import Foundation
 import Combine
 
 protocol DogsWebRepository: WebRepository {
-    func fetchDogLocation() -> AnyPublisher<Records, APIError>
+    @available(iOS 15.0.0, *)
+    func fetchDogLocation() async throws -> Records
 }
 
 struct DefaultDogsWebRepository: DogsWebRepository {
@@ -22,7 +23,8 @@ struct DefaultDogsWebRepository: DogsWebRepository {
         self.baseURL = baseURL
     }
 
-    func fetchDogLocation() -> AnyPublisher<Records, APIError> {
+    @available(iOS 15.0.0, *)
+    func fetchDogLocation() async throws -> Records {
 
         let route = Route(
             method: .Get,
@@ -30,7 +32,6 @@ struct DefaultDogsWebRepository: DogsWebRepository {
             headers: ["Accept": "application/json"]
         )
 
-
-        return fetchData(endpoint: route)
+        return try await fetchData(endpoint: route)
     }
 }

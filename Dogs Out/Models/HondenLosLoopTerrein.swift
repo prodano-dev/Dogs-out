@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct HondenLoopTerrein: Codable, Equatable {
+struct HondenLoopTerrein: Codable, Equatable, Identifiable {
 
-    let recordId: String
+    let id: String
     let fields: Fields
     let geometry: Geometry
 
     enum CodingKeys: String, CodingKey {
-        case recordId = "recordid"
+        case id = "recordid"
         case fields = "fields"
         case geometry = "geometry"
     }

@@ -38,4 +38,9 @@ public class Route {
         }
         return request
     }
+
+    public func justUrl(baseUrl: String) -> URL {
+        let url = URL(string: baseUrl + path)
+        return url!
+    }
 }

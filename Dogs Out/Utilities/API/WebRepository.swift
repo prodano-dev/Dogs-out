@@ -15,29 +15,17 @@ protocol WebRepository {
 
 extension WebRepository {
 
-    public func fetchData<Value: Decodable>(endpoint: Route) -> AnyPublisher<Value, APIError> {
-
+    @available(iOS 15.0.0, *)
+    public func fetchData(endpoint: Route) async throws -> Records {
+        let request = try endpoint.urlRequest(baseURL: baseURL)
+        let url = try endpoint.justUrl(baseUrl: baseURL)
         do {
-            let request = try endpoint.urlRequest(baseURL: baseURL)
 
-            return session
-                .dataTaskPublisher(for: request)
-                .tryMap { response in
-                    guard
-                        let httpURLResponse = response.response as? HTTPURLResponse,
-                        httpURLResponse.statusCode == 200 else {
-                            throw APIError.genericError
-                        }
-                    return response.data
-
-                }
-                .mapError { APIError.map($0) }
-                .decode(type: Value.self, decoder: JSONDecoder())
-                .mapError { APIError.map($0) }
-                .receive(on: DispatchQueue.main)
-                .eraseToAnyPublisher()
-        } catch let error {
-            return Fail<Value, APIError>(error: APIError.other(error)).eraseToAnyPublisher()
+            let (data, response) = try await URLSession.shared.data(from: url)
+            let records = try JSONDecoder().decode(Records.self, from: data)
+            return records
+        } catch {
+            throw error
         }
     }
 }
