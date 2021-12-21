@@ -14,12 +14,14 @@ extension MapView {
 
     class ViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
 
-        @Published var hondenTerrein: [HondenLoopTerrein] = []
-        @Published var locationAuthorization: CLAuthorizationStatus = .notDetermined
+
         private let locationManager = CLLocationManager()
         public let container: DIContainer
         public let cancelBag = Cancellable()
         @Published var transportType: MKDirectionsTransportType = .walking
+        @Published var hondenTerrein: [HondenLoopTerrein] = []
+        @Published var locationAuthorization: CLAuthorizationStatus = .notDetermined
+        @Published var distances: [String: Double] = [:]
 
         init(container: DIContainer) {
             self.container = container
@@ -28,7 +30,9 @@ extension MapView {
         }
 
         public func giveLocation() -> CLLocationCoordinate2D {
-            return locationManager.location!.coordinate
+            guard let userLocation = locationManager.location?.coordinate
+            else { return CLLocationCoordinate2D(latitude: 0, longitude: 0)}
+            return userLocation
         }
 
         public func requestAuthorisation() {
@@ -49,7 +53,7 @@ extension MapView {
                 }
         }
 
-        public func calculateDistance(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D) {
+        public func calculateDistance(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D, id: String) {
 
             let request = MKDirections.Request()
             request.source = MKMapItem(placemark: MKPlacemark(coordinate: start))
@@ -61,10 +65,9 @@ extension MapView {
 
                 if let routes = response?.routes {
                     let route = routes[0]
-                    print(route.distance / 1000)
+                    self.distances[id] = route.distance / 1000
                 }
             }
-
         }
 
         @MainActor public func fetchHondenTerrein() async {

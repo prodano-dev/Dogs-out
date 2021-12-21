@@ -17,6 +17,8 @@ struct MapView: View {
         span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
     )
     @State var didChangedTransport = false
+    @State var footest = 0.0
+    var arrat = [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,3.0]
 
     var body: some View {
 
@@ -68,11 +70,18 @@ struct MapView: View {
                         ForEach(0..<viewModel.hondenTerrein.count, id:\.self) { index in
 
                             ParkCell(title:
-                                        viewModel.hondenTerrein[index].fields.neighboorHood
+                                    viewModel.hondenTerrein[index].fields.neighboorHood,
+                                     distance: distanceForPark(id: viewModel.hondenTerrein[index].id)
                             )
                                 .onTapGesture {
                                     selectedPlace = viewModel.hondenTerrein[index].id
-                                    calculate(loca: viewModel.hondenTerrein[index].geometry)
+
+                                }
+                                .onChange(of: viewModel.locationAuthorization) { newValue in
+                                    calculateDistanceToPark(
+                                        parkGeometry: viewModel.hondenTerrein[index].geometry,
+                                        id: viewModel.hondenTerrein[index].id
+                                    )
                                 }
                         }
                     }
@@ -90,20 +99,27 @@ struct MapView: View {
         }
     }
 
-    public func calculate(loca: Geometry) {
-        let end = CLLocationCoordinate2D(
-            latitude: loca.coordinates[1],
-            longitude: loca.coordinates[0]
-        )
-
-        viewModel.calculateDistance(
-            start: viewModel.giveLocation(),
-            end: end)
-
+    private func distanceForPark(id: String) -> Double {
+        guard let distance = viewModel.distances[id] else {
+            return 0.0
+        }
+        return distance
     }
 
     private func selectedPark(location: String) -> Bool {
         return selectedPlace == location
+    }
+
+    public func calculateDistanceToPark(parkGeometry: Geometry, id: String) {
+        let end = CLLocationCoordinate2D(
+            latitude: parkGeometry.coordinates[1],
+            longitude: parkGeometry.coordinates[0]
+        )
+
+        viewModel.calculateDistance(
+            start: viewModel.giveLocation(),
+            end: end,
+            id: id)
     }
 
     func didTappedLocationButton() {

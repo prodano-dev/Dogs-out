@@ -13,6 +13,7 @@ struct HondenLoopTerrein: Codable, Equatable, Identifiable {
     let fields: Fields
     let geometry: Geometry
 
+
     enum CodingKeys: String, CodingKey {
         case id = "recordid"
         case fields = "fields"

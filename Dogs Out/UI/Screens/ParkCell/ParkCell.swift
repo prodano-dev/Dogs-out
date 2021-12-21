@@ -11,6 +11,7 @@ import MapKit
 struct ParkCell: View {
 
     let title: String
+    var distance = 0.0
 
     var body: some View {
         HStack {
@@ -29,8 +30,13 @@ struct ParkCell: View {
                     HStack {
                         Image(systemName: "location.fill")
                             .foregroundColor(.orange)
-                        Text("10km verwijderd")
-                            .font(.caption)
+                        if distance == 0.0 {
+                            Text("Enable location")
+                                .font(.subheadline)
+                        } else {
+                            Text("\(distance) km verwijderd")
+                                .font(.caption)
+                        }
                         Spacer()
                     }
                     Button {
