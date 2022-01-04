@@ -12,6 +12,7 @@ struct ParkCell: View {
 
     let title: String
     var distance = 0.0
+    let onTap: (() -> Void)
 
     var body: some View {
         HStack {
@@ -40,7 +41,7 @@ struct ParkCell: View {
                         Spacer()
                     }
                     Button {
-
+                        onTap()
                     } label: {
                         Text("Navigate")
                             .font(.subheadline)
@@ -60,12 +61,5 @@ struct ParkCell: View {
         .padding(.horizontal, 5)
         .padding(.bottom)
 
-    }
-}
-
-
-struct ParkCell_Preview: PreviewProvider {
-    static var previews: some View {
-        ParkCell(title: "Lisalaan")
     }
 }
