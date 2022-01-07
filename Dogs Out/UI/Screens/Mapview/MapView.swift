@@ -66,7 +66,8 @@ struct MapView: View {
 
                             ParkCell(title:
                                     viewModel.hondenTerrein[index].fields.neighboorHood,
-                                     distance: viewModel.distanceForPark(id: viewModel.hondenTerrein[index].id),
+                                     distance: viewModel.distanceForPark(id: viewModel.hondenTerrein[index].id, distanceOrTime: 0),
+                                     timeTravel: viewModel.distanceForPark(id: viewModel.hondenTerrein[index].id, distanceOrTime: 1),
                                      onTap: {
                                 viewModel.parkDestination = giveLocation(terrein: viewModel.hondenTerrein[index].geometry)
 

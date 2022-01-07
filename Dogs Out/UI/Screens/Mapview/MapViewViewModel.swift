@@ -20,7 +20,7 @@ extension MapView {
         @Published var transportType: MKDirectionsTransportType = .walking
         @Published var hondenTerrein: [HondenLoopTerrein] = []
         @Published var locationAuthorization: CLAuthorizationStatus = .notDetermined
-        @Published var distances: [String: Double] = [:]
+        @Published var distances: [String: [Double]] = [:]
         var selectedPlace: String = ""
         @State var region = MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 51.4396509, longitude: 5.4760529),
@@ -74,24 +74,28 @@ extension MapView {
             directions.calculate { response, err in
 
                 if let routes = response?.routes {
-                    let route = routes[0]
-                    self.distances[id] = route.distance / 1000
-                    self.hondenTerrein[0].distance = 34
-                    
+                    if let route = routes.first {
+                        self.distances[id] = [
+                            route.distance / 1000,
+                            (route.expectedTravelTime / 60).rounded()
+                        ]
+                    }
                 }
             }
+
         }
 
         public func selectedPark(location: String) -> Bool {
             return selectedPlace == location
         }
 
-        public func distanceForPark(id: String) -> Double {
+        public func distanceForPark(id: String, distanceOrTime: Int) -> Double {
             guard let distance = distances[id] else {
                 return 0.0
             }
-            return distance
+            return distance[distanceOrTime]
         }
+        
 
 
         @MainActor public func fetchHondenTerrein() async {

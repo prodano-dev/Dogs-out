@@ -96,13 +96,5 @@ struct MapKitView: UIViewRepresentable {
             renderer.lineWidth = 3
             return renderer
         }
-
-        func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-
-        }
-
-        func mapView(_ mapView: MKMapView, didDeselect view: MKAnnotationView) {
-            view.image = UIImage(systemName: "pawprint.fill")
-        }
     }
 }

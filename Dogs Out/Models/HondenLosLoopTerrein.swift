@@ -12,7 +12,6 @@ struct HondenLoopTerrein: Codable, Equatable, Identifiable {
     let id: String
     let fields: Fields
     let geometry: Geometry
-    var distance = 0.0
 
 
     enum CodingKeys: String, CodingKey {

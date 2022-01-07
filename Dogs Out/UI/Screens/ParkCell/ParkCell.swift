@@ -12,6 +12,7 @@ struct ParkCell: View {
 
     let title: String
     var distance = 0.0
+    var timeTravel = 0.0
     let onTap: (() -> Void)
 
     var body: some View {
@@ -28,18 +29,30 @@ struct ParkCell: View {
                         .padding(.top)
                         Spacer()
                     }
-                    HStack {
-                        Image(systemName: "location.fill")
-                            .foregroundColor(.orange)
-                        if distance == 0.0 {
-                            Text("Enable location")
-                                .font(.subheadline)
-                        } else {
-                            Text("\(distance) km verwijderd")
-                                .font(.caption)
+                    VStack {
+                        HStack {
+                            Image(systemName: "location.fill")
+                                .foregroundColor(.orange)
+                            if distance == 0.0 {
+                                Text("Enable location")
+                                    .font(.subheadline)
+                            } else {
+                                Text("\(format(item: distance)) km verwijderd")
+                                    .font(.caption)
+                            }
+                            Spacer()
                         }
-                        Spacer()
+                        HStack {
+                            Image(systemName: "clock")
+                                .foregroundColor(.orange)
+                            if !(distance == 0.0) {
+                                Text("\(format(item: timeTravel)) minuten")
+                                    .font(.caption)
+                            }
+                            Spacer()
+                        }
                     }
+
                     Button {
                         onTap()
                     } label: {
@@ -61,5 +74,9 @@ struct ParkCell: View {
         .padding(.horizontal, 5)
         .padding(.bottom)
 
+    }
+
+    func format(item: Double) -> String {
+        return String(format: "%.2f", item)
     }
 }
