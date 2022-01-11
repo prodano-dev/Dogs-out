@@ -11,7 +11,7 @@ import MapKit
 struct MapKitView: UIViewRepresentable {
 
     var annotations: [MKPointAnnotation] = []
-    @Binding var centerCoordinate: CLLocationCoordinate2D
+    @Binding var region: MKCoordinateRegion
     var destinationPoint: CLLocationCoordinate2D
     var transportType: MKDirectionsTransportType
     var showRoute: Bool
@@ -21,10 +21,6 @@ struct MapKitView: UIViewRepresentable {
     func makeUIView(context: Context) -> MKMapView {
         let mapView = MKMapView()
         mapView.delegate = context.coordinator
-        let region = MKCoordinateRegion(
-            center: centerCoordinate,
-            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-        )
         mapView.setRegion(region, animated: true)
         return mapView
     }
@@ -35,6 +31,7 @@ struct MapKitView: UIViewRepresentable {
                 view.addAnnotations(annotations)
             }
         view.showsUserLocation = true
+        view.setRegion(region, animated: true)
 
         //TODO: - Fix route polyline.
         if showRoute {
@@ -76,7 +73,7 @@ struct MapKitView: UIViewRepresentable {
         }
 
         func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
-            parent.centerCoordinate = mapView.centerCoordinate
+            parent.region.center = mapView.centerCoordinate
         }
 
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {

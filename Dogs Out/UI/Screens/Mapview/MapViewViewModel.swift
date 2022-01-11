@@ -23,6 +23,7 @@ extension MapView {
         @Published var distances: [String: [Double]] = [:]
         var selectedPlace: String = ""
         var parkDestination: CLLocationCoordinate2D = CLLocationCoordinate2D()
+        let centerLocation = CLLocationCoordinate2D(latitude: 51.4396509, longitude: 5.4760529)
 
         init(container: DIContainer) {
             self.container = container

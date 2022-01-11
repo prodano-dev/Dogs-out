@@ -19,13 +19,14 @@ struct MapView: View {
     )
     @State var showRoute = false
     @State var selectedPark = 0
+    @State var showCenterIcon = false
 
     var body: some View {
 
         ZStack {
             MapKitView(
                 annotations: locations,
-                centerCoordinate: $region.center,
+                region: $region,
                 destinationPoint: viewModel.parkDestination,
                 transportType: viewModel.transportType,
                 showRoute: showRoute,
@@ -35,17 +36,39 @@ struct MapView: View {
                     await viewModel.fetchHondenTerrein()
                 }
                 .onChange(of: viewModel.hondenTerrein) { newValue in
-                                 for terrein in 0..<newValue.count {
-                                     setLocations(
-                                         terrein: newValue[terrein].geometry,
-                                         title: newValue[terrein].fields.neighboorHood,
-                                         index: terrein
-                                     )
-                                 }
-                             }
-            
+                    for terrein in 0..<newValue.count {
+                        setLocations(
+                            terrein: newValue[terrein].geometry,
+                            title: newValue[terrein].fields.neighboorHood,
+                            index: terrein
+                        )
+                    }
+                }
+                .onChange(of: region.center.latitude) { newValue in
+                   showCenterIcon = true
+                    if newValue == viewModel.centerLocation.latitude {
+                        showCenterIcon = false
+                    }
+                }
             VStack {
                 Spacer()
+                if showCenterIcon {
+
+                    HStack {
+                        Spacer()
+                        Button {
+                            region.center = viewModel.centerLocation
+                        } label: {
+                            Image(systemName: "location.viewfinder")
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                        }
+                        .frame(width: 50, height: 50)
+                        .background(Color.black.opacity(0.3))
+                        .cornerRadius(12)
+                        .padding(.horizontal)
+                    }
+                }
                 HStack {
                     Spacer()
                     Button {
@@ -69,6 +92,7 @@ struct MapView: View {
                     .cornerRadius(12)
                     .padding()
                 }
+
                 ScrollViewReader { scrollviewReader in
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 1) {
@@ -96,7 +120,7 @@ struct MapView: View {
                                     }
                                     .onChange(of: viewModel.transportType) { newValue in
                                         Task {
-    //                                        await viewModel.calculatefoo(index: index)
+                //                                        await viewModel.calculatefoo(index: index)
                                             viewModel.calculateDistance(
                                             parkGeometry: viewModel.hondenTerrein[index].geometry,
                                             id: viewModel.hondenTerrein[index].id)
@@ -112,6 +136,7 @@ struct MapView: View {
                     }
                 }
             }
+            
         }
     }
     
