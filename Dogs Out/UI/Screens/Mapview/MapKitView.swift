@@ -16,6 +16,7 @@ struct MapKitView: UIViewRepresentable {
     var transportType: MKDirectionsTransportType
     var showRoute: Bool
     @Binding var selectedPark: Int
+    @Binding var zoomLevel: Double
 
 
     func makeUIView(context: Context) -> MKMapView {
@@ -31,8 +32,8 @@ struct MapKitView: UIViewRepresentable {
                 view.addAnnotations(annotations)
             }
         view.showsUserLocation = true
-        view.setRegion(region, animated: true)
-
+        //view.region.span = MKCoordinateSpan(latitudeDelta: zoomLevel, longitudeDelta: zoomLevel)
+        print(zoomLevel)
         //TODO: - Fix route polyline.
         if showRoute {
             let request = MKDirections.Request()

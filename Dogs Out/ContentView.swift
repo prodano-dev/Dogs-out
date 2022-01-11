@@ -12,6 +12,7 @@ struct ContentView: View {
     let container: DIContainer
 
     var body: some View {
+        //ZoomView()
         MapView(viewModel: .init(container: container))
     }
 }

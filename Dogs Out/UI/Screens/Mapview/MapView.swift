@@ -15,11 +15,12 @@ struct MapView: View {
     @State private var locations = [MKPointAnnotation]()
     @State var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 51.4396509, longitude: 5.4760529),
-        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
     )
     @State var showRoute = false
     @State var selectedPark = 0
     @State var showCenterIcon = false
+    @State var zoomLevel = 0.5
 
     var body: some View {
 
@@ -30,7 +31,8 @@ struct MapView: View {
                 destinationPoint: viewModel.parkDestination,
                 transportType: viewModel.transportType,
                 showRoute: showRoute,
-                selectedPark: $selectedPark
+                selectedPark: $selectedPark,
+                zoomLevel: $zoomLevel
             )
                 .task {
                     await viewModel.fetchHondenTerrein()
@@ -51,13 +53,17 @@ struct MapView: View {
                     }
                 }
             VStack {
-                Spacer()
+                HStack {
+                    Spacer()
+                    ZoomView(zoomlevel: $zoomLevel)
+                        .padding(.horizontal)
+                }
                 if showCenterIcon {
 
                     HStack {
                         Spacer()
                         Button {
-                            region.center = viewModel.centerLocation
+                            //region.center = viewModel.centerLocation
                         } label: {
                             Image(systemName: "location.viewfinder")
                                 .resizable()
@@ -130,6 +136,7 @@ struct MapView: View {
                                         withAnimation(.easeIn(duration: 5.5)) {
                                             scrollviewReader.scrollTo(selectedPark)
                                         }
+                                        print(region.span)
                                     }
                             }
                         }
