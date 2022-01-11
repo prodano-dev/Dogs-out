@@ -22,10 +22,6 @@ extension MapView {
         @Published var locationAuthorization: CLAuthorizationStatus = .notDetermined
         @Published var distances: [String: [Double]] = [:]
         var selectedPlace: String = ""
-        @State var region = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: 51.4396509, longitude: 5.4760529),
-            span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
-        )
         var parkDestination: CLLocationCoordinate2D = CLLocationCoordinate2D()
 
         init(container: DIContainer) {
@@ -56,6 +52,36 @@ extension MapView {
                 }
         }
 
+        public func calculateDistance(index: Int) async {
+            let end = CLLocationCoordinate2D(
+                latitude: hondenTerrein[index].geometry.coordinates[1],
+                longitude: hondenTerrein[index].geometry.coordinates[0]
+            )
+            let id = hondenTerrein[index].id
+
+            let request = MKDirections.Request()
+            request.source = MKMapItem(placemark: MKPlacemark(coordinate: giveLocation()))
+            request.destination = MKMapItem(placemark: MKPlacemark(coordinate: end))
+            request.transportType = transportType
+
+            let directions = MKDirections(request: request)
+
+            do {
+                self.distances[id] = try await [directions
+                    .calculate()
+                    .routes
+                    .first!
+                    .distance/1000,
+                    directions
+                        .calculate()
+                        .routes
+                        .first!
+                        .expectedTravelTime/60.rounded()]
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+
         public func calculateDistance(parkGeometry: Geometry, id: String) {
             let end = CLLocationCoordinate2D(
                 latitude: parkGeometry.coordinates[1],
@@ -82,7 +108,6 @@ extension MapView {
                     }
                 }
             }
-
         }
 
         public func selectedPark(location: String) -> Bool {

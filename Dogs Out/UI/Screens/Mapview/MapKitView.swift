@@ -14,6 +14,8 @@ struct MapKitView: UIViewRepresentable {
     @Binding var centerCoordinate: CLLocationCoordinate2D
     var destinationPoint: CLLocationCoordinate2D
     var transportType: MKDirectionsTransportType
+    var showRoute: Bool
+    @Binding var selectedPark: Int
 
 
     func makeUIView(context: Context) -> MKMapView {
@@ -24,7 +26,6 @@ struct MapKitView: UIViewRepresentable {
             span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
         )
         mapView.setRegion(region, animated: true)
-
         return mapView
     }
 
@@ -36,7 +37,7 @@ struct MapKitView: UIViewRepresentable {
         view.showsUserLocation = true
 
         //TODO: - Fix route polyline.
-        if !destinationPoint.latitude.isZero {
+        if showRoute {
             let request = MKDirections.Request()
             request.source = .forCurrentLocation()
             request.destination = MKMapItem(placemark: MKPlacemark(coordinate: destinationPoint))
@@ -44,13 +45,21 @@ struct MapKitView: UIViewRepresentable {
             request.transportType = transportType
 
             let directions = MKDirections(request: request)
-            directions.calculate { response, error in
-                guard let unwrappedResponse = response else { return }
-                if let route = unwrappedResponse.routes.first {
-                    view.addOverlay(route.polyline)
-                    view.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
+
+                print("loading....")
+                directions.calculate { response, error in
+                    if let error = error {
+                        print("‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️‼️")
+                        print(error.localizedDescription)
+                    }
+                    guard let unwrappedResponse = response else { return }
+                    if let route = unwrappedResponse.routes.first {
+                        view.addOverlay(route.polyline)
+                        view.setVisibleMapRect(route.polyline.boundingMapRect, animated: true)
+                    }
                 }
-            }
+        } else {
+            view.removeOverlays(view.overlays)
         }
 
     }
@@ -83,11 +92,21 @@ struct MapKitView: UIViewRepresentable {
                         annotation: annotation,
                         reuseIdentifier: identifier
                     )
-                    annotationView?.image = UIImage(systemName: "pawprint.fill")
+                    let image = UIImage(systemName: "pawprint.fill")!.withTintColor(.orange)
+                    let size = CGSize(width: 25, height: 25)
+                    annotationView?.image = UIGraphicsImageRenderer(size:size).image {
+                        _ in image.draw(in:CGRect(origin:.zero, size:size))
+                    }
                 }
             }
 
             return annotationView
+        }
+
+        func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+            if let index = view.annotation?.subtitle {
+                parent.selectedPark = Int(index!)!
+            }
         }
 
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
@@ -96,5 +115,6 @@ struct MapKitView: UIViewRepresentable {
             renderer.lineWidth = 3
             return renderer
         }
+
     }
 }

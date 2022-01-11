@@ -13,15 +13,23 @@ struct MapView: View {
     @ObservedObject private(set) var viewModel: ViewModel
     @State var didChangedTransport = false
     @State private var locations = [MKPointAnnotation]()
+    @State var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 51.4396509, longitude: 5.4760529),
+        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+    )
+    @State var showRoute = false
+    @State var selectedPark = 0
 
     var body: some View {
 
         ZStack {
             MapKitView(
                 annotations: locations,
-                centerCoordinate: viewModel.$region.center,
+                centerCoordinate: $region.center,
                 destinationPoint: viewModel.parkDestination,
-                transportType: viewModel.transportType
+                transportType: viewModel.transportType,
+                showRoute: showRoute,
+                selectedPark: $selectedPark
             )
                 .task {
                     await viewModel.fetchHondenTerrein()
@@ -30,7 +38,8 @@ struct MapView: View {
                                  for terrein in 0..<newValue.count {
                                      setLocations(
                                          terrein: newValue[terrein].geometry,
-                                         title: newValue[terrein].fields.neighboorHood
+                                         title: newValue[terrein].fields.neighboorHood,
+                                         index: terrein
                                      )
                                  }
                              }
@@ -60,40 +69,52 @@ struct MapView: View {
                     .cornerRadius(12)
                     .padding()
                 }
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 1) {
-                        ForEach(0..<viewModel.hondenTerrein.count, id:\.self) { index in
+                ScrollViewReader { scrollviewReader in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 1) {
+                            ForEach(0..<viewModel.hondenTerrein.count, id:\.self) { index in
 
-                            ParkCell(title:
-                                    viewModel.hondenTerrein[index].fields.neighboorHood,
-                                     distance: viewModel.distanceForPark(id: viewModel.hondenTerrein[index].id, distanceOrTime: 0),
-                                     timeTravel: viewModel.distanceForPark(id: viewModel.hondenTerrein[index].id, distanceOrTime: 1),
-                                     onTap: {
-                                viewModel.parkDestination = giveLocation(terrein: viewModel.hondenTerrein[index].geometry)
+                                ParkCell(title:
+                                        viewModel.hondenTerrein[index].fields.neighboorHood,
+                                         distance: viewModel.distanceForPark(id: viewModel.hondenTerrein[index].id, distanceOrTime: 0),
+                                         timeTravel: viewModel.distanceForPark(id: viewModel.hondenTerrein[index].id, distanceOrTime: 1),
+                                         onTap: {
+                                    showRoute.toggle()
+                                    viewModel.parkDestination = giveLocation(terrein: viewModel.hondenTerrein[index].geometry)
 
-                            })
-                                .onTapGesture {
-                                    didTappedCell(at: index)
-
-                                }
-                                .onChange(of: viewModel.locationAuthorization) { newValue in
-                                    viewModel.calculateDistance(
-                                        parkGeometry: viewModel.hondenTerrein[index].geometry,
-                                        id: viewModel.hondenTerrein[index].id)
-                                }
-                                .onChange(of: viewModel.transportType) { newValue in
-                                    viewModel.calculateDistance(
-                                        parkGeometry: viewModel.hondenTerrein[index].geometry,
-                                        id: viewModel.hondenTerrein[index].id)
-                                }
+                                }, navigating: showRoute)
+                                    .onTapGesture {
+                                        didTappedCell(at: index)
+                                    }
+                                    .onChange(of: viewModel.locationAuthorization) { newValue in
+                                        Task {
+                                            //await viewModel.calculatefoo(index: index)
+                                            viewModel.calculateDistance(
+                                            parkGeometry: viewModel.hondenTerrein[index].geometry,
+                                            id: viewModel.hondenTerrein[index].id)
+                                        }
+                                    }
+                                    .onChange(of: viewModel.transportType) { newValue in
+                                        Task {
+    //                                        await viewModel.calculatefoo(index: index)
+                                            viewModel.calculateDistance(
+                                            parkGeometry: viewModel.hondenTerrein[index].geometry,
+                                            id: viewModel.hondenTerrein[index].id)
+                                        }
+                                    }
+                                    .onChange(of: selectedPark) { newValue in
+                                        withAnimation(.easeIn(duration: 5.5)) {
+                                            scrollviewReader.scrollTo(selectedPark)
+                                        }
+                                    }
+                            }
                         }
                     }
                 }
-                .animation(.default)
             }
         }
     }
-
+    
     private func didTappedCell(at: Int) {
         viewModel.selectedPlace = viewModel.hondenTerrein[at].id
     }
@@ -106,16 +127,17 @@ struct MapView: View {
         }
     }
 
-    private func setLocations(terrein: Geometry, title: String) {
-             let location = CLLocationCoordinate2D(
-                 latitude: terrein.coordinates[1],
-                 longitude: terrein.coordinates[0]
-             )
-             let newLocation = MKPointAnnotation()
-             newLocation.coordinate = location
-             newLocation.title = title
-             self.locations.append(newLocation)
-         }
+    private func setLocations(terrein: Geometry, title: String, index: Int) {
+        let location = CLLocationCoordinate2D(
+            latitude: terrein.coordinates[1],
+            longitude: terrein.coordinates[0]
+        )
+        let newLocation = MKPointAnnotation()
+        newLocation.coordinate = location
+        newLocation.title = title
+        newLocation.subtitle = String(index)
+        self.locations.append(newLocation)
+    }
 
     func didTappedLocationButton() {
         if viewModel.locationAuthorization == .notDetermined {

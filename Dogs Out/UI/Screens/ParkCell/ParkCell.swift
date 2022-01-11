@@ -14,6 +14,7 @@ struct ParkCell: View {
     var distance = 0.0
     var timeTravel = 0.0
     let onTap: (() -> Void)
+    var navigating = false
 
     var body: some View {
         HStack {
@@ -56,12 +57,12 @@ struct ParkCell: View {
                     Button {
                         onTap()
                     } label: {
-                        Text("Navigate")
+                        Text(navigating ? "Stop navigation" : "Navigate")
                             .font(.subheadline)
                             .foregroundColor(.white)
                     }
                     .frame(width: 150, height: 50)
-                    .background(Color.orange)
+                    .background(navigating ? Color.red: Color.orange)
                     .cornerRadius(50)
                     .padding()
 
