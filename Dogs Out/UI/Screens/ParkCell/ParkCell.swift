@@ -21,9 +21,9 @@ struct ParkCell: View {
             Image("doggy")
                 .resizable()
                 .frame(width: 100, height: 125)
-                .padding(.horizontal)
+                .padding(.horizontal, 9)
             HStack {
-                VStack {
+                VStack(alignment: .leading) {
                     HStack {
                         Text(title)
                             .font(.headline)
@@ -53,7 +53,6 @@ struct ParkCell: View {
                             Spacer()
                         }
                     }
-
                     Button {
                         onTap()
                     } label: {
@@ -64,7 +63,7 @@ struct ParkCell: View {
                     .frame(width: 150, height: 50)
                     .background(navigating ? Color.red: Color.orange)
                     .cornerRadius(50)
-                    .padding()
+                    .padding(.bottom, 5)
 
                 }
                 Spacer()
@@ -81,3 +80,12 @@ struct ParkCell: View {
         return String(format: "%.2f", item)
     }
 }
+
+struct foo_Previews: PreviewProvider {
+    static var previews: some View {
+        ParkCell(title: "test", distance: 0.23, timeTravel: 23.0, onTap: {
+
+        }, navigating: false)
+    }
+}
+
