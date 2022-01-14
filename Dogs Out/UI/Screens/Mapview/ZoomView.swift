@@ -9,38 +9,45 @@ import SwiftUI
 
 struct ZoomView: View {
 
-    @State var yAs = 0
+    @State var offsetY = 0
     var simpleDrag: some Gesture {
            DragGesture()
-               .onChanged { value in
-                   yAs = Int(value.translation.height)
+               .onChanged { gesture in
+                   withAnimation(.spring()) {
+                       if gesture.translation.height < 160 &&
+                            gesture.translation.height > -160 {
+                           offsetY = Int(lastOffsetY + gesture.translation.height)
+                       }
+                   }
+               }
+               .onEnded { _ in
+                   lastOffsetY = CGFloat(offsetY)
                }
        }
+
     @State var scrolling = false
     @Binding var zoomlevel: Double
-    
+    @State private var lastOffsetY: CGFloat = 0
+
     var body: some View {
         HStack {
             ZStack {
                 Rectangle()
                     .frame(width: scrolling ? 100 : 40, height: 30)
 
-                    .offset(x: 10, y: CGFloat(yAs))
+                    .offset(x: 10, y: CGFloat(offsetY))
                     .opacity(0.3)
                     .animation(.easeIn)
                 .gesture(simpleDrag)
-                .onTapGesture {
-                    print(yAs)
-                }
-                .onLongPressGesture(minimumDuration: 0.1) {
 
-                    } onPressingChanged: { inProgress in
+                .onLongPressGesture(minimumDuration: 0.1) { } onPressingChanged: { inProgress in
                        scrolling = inProgress
                     }
+                
                 Text(returnImage())
-                    .offset(x: scrolling ? -10 : 10, y: CGFloat(yAs))
+                    .offset(x: scrolling ? -10 : 10, y: CGFloat(offsetY))
                     .animation(.easeIn)
-
+    
                     
             }
             Rectangle()
@@ -51,8 +58,7 @@ struct ZoomView: View {
     }
 
     private func returnImage() -> String {
-//schoen, bijvogel, heli, vliegt, nasa raket.
-        switch yAs {
+        switch offsetY {
         case -160 ... -120:
             return "👟"
         case -120 ... -80:
@@ -72,5 +78,13 @@ struct ZoomView: View {
         default:
             return "🕊"
         }
+    }
+}
+
+
+struct foot_Previews: PreviewProvider {
+    @State var zoom = 0.5
+    static var previews: some View {
+        ZoomView(zoomlevel: .constant(0.5))
     }
 }
